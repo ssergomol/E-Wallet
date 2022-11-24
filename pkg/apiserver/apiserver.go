@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/ssergomol/E-Wallet/pkg/database"
-	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
 type APIserver struct {
@@ -14,7 +13,6 @@ type APIserver struct {
 	router *mux.Router
 	logger *logrus.Logger
 	db     *database.Storage
-	cache  map[uint]models.Order
 }
 
 func CreateServer(config *ConfigServer) (*APIserver, error) {
@@ -56,9 +54,6 @@ func (s *APIserver) configureLogger() error {
 func (s *APIserver) configureRouter() {
 	s.RegisterHome()
 	s.RegisterBalance()
-	s.RegisterAccount()
-	s.RegisterTransfer()
-	s.RegisterReport()
 }
 
 func (s *APIserver) configureDatabase() error {

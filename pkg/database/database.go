@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	_ "github.com/lib/pq"
+	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
 type Storage struct {
@@ -12,11 +13,13 @@ type Storage struct {
 	userRepo    *UserRepo
 	orderRepo   *OrderRepo
 	balanceRepo *BalanceRepo
+	cache       map[uint][]models.Order
 }
 
 func NewDB(config *ConfigDB) *Storage {
 	return &Storage{
 		config: config,
+		cache:  make(map[uint][]models.Order),
 	}
 }
 

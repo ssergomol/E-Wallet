@@ -75,33 +75,11 @@ func (r *BalanceRepo) ReplenishBalance(balance models.Balance, order models.Orde
 	newSum := sum.Add(deltaSum)
 
 	r.store.db.QueryRow("UPDATE balances SET sum = $1 WHERE user_id = $2", newSum.String(), order.UserID)
-
-	order.Description = "Replenish balance"
 	return r.store.Order().CreateOrder(order)
 }
 
 func (r *BalanceRepo) SpendFunds(balance models.Balance, order models.Order) error {
-	var oldSum string
-	if err := r.store.db.QueryRow("SELECT sum from balances WHERE user_id = $1", balance.ID).Scan(&oldSum); err != nil {
-		if err == sql.ErrNoRows {
-			r.store.db.QueryRow(
-				`INSERT INTO balances (user_id, sum) VALUES ($1, $2)`,
-				balance.ID, balance.Sum,
-			)
-
-			if err != nil {
-				return err
-			}
-			return nil
-		}
-		return err
-	}
-	err := r.store.db.QueryRow("SELECT sum from balances WHERE user_id = $1", balance.ID).Scan(&oldSum)
-	if err != nil {
-		return err
-	}
-
-	sum, err := decimal.NewFromString(oldSum)
+	sum, err := decimal.NewFromString(balance.Sum)
 	if err != nil {
 		return err
 	}
@@ -110,10 +88,7 @@ func (r *BalanceRepo) SpendFunds(balance models.Balance, order models.Order) err
 	if err != nil {
 		return err
 	}
-	newSum := sum.Add(deltaSum)
 
-	r.store.db.QueryRow("UPDATE balances SET sum = $1 WHERE user_id = $2", newSum.String(), order.UserID)
-
-	order.Description = "Replenish balance"
+	r.store.db.QueryRow("UPDATE balances SET sum = $1 WHERE user_id = $2", sum.Sub(deltaSum), order.UserID)
 	return r.store.Order().CreateOrder(order)
 }

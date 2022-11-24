@@ -7,7 +7,3 @@ func (s *APIserver) RegisterHome() {
 func (s *APIserver) RegisterBalance() {
 	s.router.HandleFunc("/balance", s.BalanceHandler).Methods("GET", "POST")
 }
-
-func (s *APIserver) RegisterAccount() {
-	s.router.HandleFunc("/accounts", s.AccountsHandler).Methods("POST")
-}
