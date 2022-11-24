@@ -29,9 +29,20 @@ func (s *Storage) Connect() error {
 		return err
 	}
 
-	_, err = db.Exec("CREATE DATABASE " + s.config.dbName)
-	if err != nil {
-		return err
+	var result int
+	dbExists := true
+	if err := db.QueryRow("SELECT 1 AS result FROM pg_database WHERE datname=$1", s.config.dbName).Scan(
+		&result); err != nil {
+
+		if err == sql.ErrNoRows {
+			dbExists = false
+			_, err = db.Exec("CREATE DATABASE " + s.config.dbName)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
 	}
 
 	db.Close()
@@ -47,8 +58,11 @@ func (s *Storage) Connect() error {
 	}
 
 	s.db = db
+	if !dbExists {
+		return LoadSQLFile(s.db)
+	}
 
-	return LoadSQLFile(s.db)
+	return nil
 }
 
 func (s *Storage) Disconnect() error {
