@@ -34,7 +34,7 @@
 <!-- ## About the project -->
 ## Описание проекта
 
-Сервис для управления балансом пользователей, который позволяет осуществлять основные денежные операции\
+Сервис для управления балансом пользователей, который позволяет осуществлять основные денежные операции
 <!-- Service for managing users' balance which allows the money operations such as crediting funds, debiting funds, transferring funds from user to user as well as  obtaining the user's balance -->
 
 <!-- TECHNOLOGIES -->
