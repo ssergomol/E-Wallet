@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/ssergomol/Balance-Manager/pkg/apiserver"
+	"github.com/ssergomol/E-Wallet/pkg/apiserver"
 )
 
 func main() {

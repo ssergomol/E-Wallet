@@ -1,6 +1,6 @@
 package database
 
-import "github.com/ssergomol/Balance-Manager/pkg/models"
+import "github.com/ssergomol/E-Wallet/pkg/models"
 
 type UserRepo struct {
 	store *Storage

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/shopspring/decimal"
-	"github.com/ssergomol/Balance-Manager/pkg/models"
+	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
 type BalanceRepo struct {

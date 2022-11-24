@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/ssergomol/Balance-Manager/pkg/models"
+	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
 func (s *APIserver) HomeHandler() http.HandlerFunc {

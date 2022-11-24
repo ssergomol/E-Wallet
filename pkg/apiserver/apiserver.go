@@ -5,8 +5,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"github.com/ssergomol/Balance-Manager/pkg/database"
-	"github.com/ssergomol/Balance-Manager/pkg/models"
+	"github.com/ssergomol/E-Wallet/pkg/database"
+	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
 type APIserver struct {
