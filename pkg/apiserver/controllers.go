@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/shopspring/decimal"
 	"github.com/ssergomol/E-Wallet/pkg/models"
 )
 
@@ -17,7 +18,7 @@ func (s *APIserver) HomeHandler() http.HandlerFunc {
 func (s *APIserver) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		s.logger.Info("got balance POST request")
+		s.logger.Info("/balance POST request")
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			s.logger.Fatal(err)
@@ -41,7 +42,17 @@ func (s *APIserver) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 			err = s.db.Balance().ReplenishBalance(balance, order)
 
 		case 1:
-			if balance.Sum < order.Price {
+			sum, err := decimal.NewFromString(balance.Sum)
+			if err != nil {
+				s.logger.Fatal(err)
+			}
+
+			price, err := decimal.NewFromString(order.Price)
+			if err != nil {
+				s.logger.Fatal(err)
+			}
+
+			if sum.LessThan(price) {
 				w.WriteHeader(http.StatusBadRequest)
 				message, err := json.Marshal("Not enough funds on the balance")
 				if err != nil {
@@ -59,7 +70,17 @@ func (s *APIserver) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 			s.logger.Fatal(err)
 		}
 
-		bytes, err := json.Marshal(balance)
+		var ordersToSend []models.Order
+		if orders, ok := s.db.Cache[order.UserID]; !ok {
+			ordersToSend, err = s.db.Order().RecoverCache(order.UserID)
+			if err != nil {
+				s.logger.Fatal(err)
+			}
+		} else {
+			ordersToSend = orders
+		}
+
+		bytes, err := json.Marshal(ordersToSend)
 		if err != nil {
 			s.logger.Fatal(err)
 		}
@@ -67,7 +88,7 @@ func (s *APIserver) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(bytes)
 
 	case http.MethodGet:
-		s.logger.Info("got balance get request")
+		s.logger.Info("/balance get request")
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {

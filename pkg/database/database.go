@@ -13,13 +13,13 @@ type Storage struct {
 	userRepo    *UserRepo
 	orderRepo   *OrderRepo
 	balanceRepo *BalanceRepo
-	cache       map[uint][]models.Order
+	Cache       map[uint][]models.Order
 }
 
 func NewDB(config *ConfigDB) *Storage {
 	return &Storage{
 		config: config,
-		cache:  make(map[uint][]models.Order),
+		Cache:  make(map[uint][]models.Order),
 	}
 }
 
